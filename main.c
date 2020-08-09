@@ -3,7 +3,7 @@
 #include "control_management_pcap.h"
 
 /*To compile:
-
+try git ssh
 gcc main.c libcontrolpcap.a -lpcap -pthread -o main
 
 */
