@@ -3,9 +3,9 @@
 int sizeTcpPayload; //aux for size of TCP payload
 
 /*Build a TCP header
-* @ srcPort: number source port. Example: 80
+* @ sourcePort: number source port. Example: 80
 * @ dstPort: number destination port. Example: 1343
 * @ offset: total size of header (* 4 bytes)
 * @ payload: optional, set "" for 0
 */
-unsigned char * TCPheader(int srcPort, int dstPort, int offset, unsigned char *payload);
+unsigned char * TCPheader(int sourcePort, int dstPort, int offset, unsigned char *payload);

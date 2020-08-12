@@ -1,7 +1,7 @@
 #include "transport_layer.h"
 
 
-unsigned char * TCPheader(int srcPort, int dstPort, int offset, unsigned char *payload){
+unsigned char * TCPheader(int sourcePort, int dstPort, int offset, unsigned char *payload){
 
 
     sizeTcpPayload = strlen(payload);
@@ -10,8 +10,8 @@ unsigned char * TCPheader(int srcPort, int dstPort, int offset, unsigned char *p
     unsigned char *packet = calloc(value, sizeof(unsigned char*));
     
     //Source port
-    packet[0] = srcPort >> 8;
-    packet[1] = srcPort & 0xFF;
+    packet[0] = sourcePort >> 8;
+    packet[1] = sourcePort & 0xFF;
     
     //Destination port
     packet[2] = dstPort >> 8;

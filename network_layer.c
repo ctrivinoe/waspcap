@@ -1,7 +1,7 @@
 #include "network_layer.h"
 
 
-unsigned char * IPheader(int IHL, int protocol, char *srcIP, char *dstIP, unsigned char *payloadIP){
+unsigned char * IPheader(int IHL, int protocol, char *source_IP, char *destination_IP, unsigned char *payloadIP){
 
     sizeIpPayload = strlen(payloadIP);
     char digits[4];
@@ -39,30 +39,30 @@ unsigned char * IPheader(int IHL, int protocol, char *srcIP, char *dstIP, unsign
     int k = 12;
 
     // Source Address
-    for (i = 0; i <= strlen(srcIP) ; i++)
+    for (i = 0; i <= strlen(source_IP) ; i++)
     {
-      if(srcIP[i] == '.' || i == strlen(srcIP)){ 
+      if(source_IP[i] == '.' || i == strlen(source_IP)){ 
           packet[k] = val;    
           digits[0] = ' ';digits[1] = ' ';digits[2] = ' '; //clear
           k++; w = 0;
 
       } else {
-          digits[w] = srcIP[i];
+          digits[w] = source_IP[i];
           val = atoi(digits);
           w++;
       }
     }
 
     // Destination Address
-    for (i = 0; i <= strlen(dstIP) ; i++)
+    for (i = 0; i <= strlen(destination_IP) ; i++)
     {
-      if(dstIP[i] == '.' || i == strlen(dstIP)){ 
+      if(destination_IP[i] == '.' || i == strlen(destination_IP)){ 
           packet[k] = val;    
           digits[0] = ' ';digits[1] = ' ';digits[2] = ' '; //clear
           k++; w = 0;
 
       } else {
-          digits[w] = dstIP[i];
+          digits[w] = destination_IP[i];
           val = atoi(digits);
           w++;
       }
@@ -83,7 +83,7 @@ unsigned char * IPheader(int IHL, int protocol, char *srcIP, char *dstIP, unsign
 }
 
 
-unsigned char * Build_packet_IP(unsigned char srcMAC[6], unsigned char dstMAC[6], unsigned char *IP_header){
+unsigned char * Build_packet_IP(unsigned char source_MAC[6], unsigned char destination_MAC[6], unsigned char *IP_header){
 
 
     int x = 0;
@@ -100,11 +100,11 @@ unsigned char * Build_packet_IP(unsigned char srcMAC[6], unsigned char dstMAC[6]
 
     for (i = 0; i < 6; i++)
     {
-        packet[i] = dstMAC[i];
+        packet[i] = destination_MAC[i];
     }
     for (i = 6; i < 12; i++)
     {
-        packet[i] = srcMAC[i];
+        packet[i] = source_MAC[i];
     }
 
     packet[12] = 0x08;
@@ -125,7 +125,7 @@ unsigned char * Build_packet_IP(unsigned char srcMAC[6], unsigned char dstMAC[6]
 }
 
 
-unsigned char * Build_packet_IP_TCP(unsigned char srcMAC[6], unsigned char dstMAC[6], unsigned char *IP_header, unsigned char *TCP_header){
+unsigned char * Build_packet_IP_TCP(unsigned char source_MAC[6], unsigned char destination_MAC[6], unsigned char *IP_header, unsigned char *TCP_header){
 
     if(sizeIpPayload > 0)
         sizeIpPayload = 0;
@@ -144,11 +144,11 @@ unsigned char * Build_packet_IP_TCP(unsigned char srcMAC[6], unsigned char dstMA
 
     for (i = 0; i < 6; i++)
     {
-        packet[i] = dstMAC[i];
+        packet[i] = destination_MAC[i];
     }
     for (i = 6; i < 12; i++)
     {
-        packet[i] = srcMAC[i];
+        packet[i] = source_MAC[i];
     }
 
     packet[12] = 0x08;

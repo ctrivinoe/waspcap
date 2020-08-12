@@ -2,9 +2,13 @@
 #include <stdlib.h>
 #include "control_management_pcap.h"
 
-/*To compile:
-try git ssh 2.0
-gcc main.c libcontrolpcap.a -lpcap -pthread -o main
+/*To compile and run:
+
+gcc -c main.c transport_layer.c network_layer.c control_management_pcap.c
+
+gcc -o demo1 main.o transport_layer.o network_layer.o control_management_pcap.o -lpcap -pthread
+
+./demo1
 
 */
 
@@ -13,8 +17,6 @@ int main(int argc, char const *argv[])
 
   //struct info device
   interface_t iface;
-
-
 
   //struct list of interfaces
   pcap_if_t interfaces;
