@@ -93,7 +93,7 @@ int setDeviceName(interface_t *iface, char *name); //return 0 //ADAPTER
 * 3: Error: Bad filter
 * 4: Error setting filter
 */
-int FilterTcpdump(interface_t *iface, char const *filter_tcpdump);
+int FilterTcpdump(interface_t *iface, char *filter_tcpdump);
 
 /*Get the MAC address from the loaded device and set in iface
 * @ iface: interface struct 

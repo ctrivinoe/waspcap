@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "unistd.h"
 #include "control_management_pcap.h"
+#include "interface.h"
 
 /*To compile and run:
 
@@ -15,67 +17,109 @@ gcc -o demo1 main.o transport_layer.o network_layer.o control_management_pcap.o 
 int main(int argc, char const *argv[])
 {
 
+  // *--- Declarations
   //struct info device
   interface_t iface;
 
   //struct list of interfaces
   pcap_if_t interfaces;
 
-  int x = 100; //numero de paquetes a capturar
-
-  printf("Activamos mensajes de error\n\n\n");
-  debugmode(1);
-
-  printf("Cargamos la lista de interfaces\n\n\n");
+  // *--- Print cover:
+  print_cover();
+  sleep(1);
+  
+  // *--- Initial load:
   interfaces = GetAvailAdapters();
-
-  //Muestra por pantalla la lista de devices disponibles
-  PrintInterfaces(&interfaces);
-
-
-  //indica el nombre del device
-  setDeviceName(&iface, "enp0s3");
-
-  printf("El nombre del interfaz es: %s \n\n\n", iface.deviceName);
-  
-  //MAC del device
+  printf("Please, select a interface for work with it: \n");
+  SelectAdapter(&interfaces, &iface);
+  //Get and print MAC
   GetMACAdapter(&iface);
-  
-  printf("Mostramos la MAC: \n\n");
-    //MAC del device
   PrintMACAdapter(&iface);
-
-  //abrimos el enlace
-  printf("Abrimos el handle: \n\n\n");
+  //Open the handle
   OpenAdapter(&iface);
 
+  // *--- Menu:
+    int nPackets;
+    int nCharacters;
+      int x=1;
+    while (x != 0){
+      print_menu();
+    scanf("%d", &x);
+    printf("\n");
+    switch(x)
+        {
+        case 1:
+            interfaces = GetAvailAdapters();
+            PrintInterfaces(&interfaces);
+        break;
 
-  printf("Capturamos un paquete \n\n\n");
-  ReceiveFrame(&iface);
+        case 2:
+            interfaces = GetAvailAdapters();
+            SelectAdapter(&interfaces, &iface);
+            OpenAdapter(&iface);
+        break;
 
-  //obtenemos información del enlace
-  GetStadistics(&iface);
+        case 3:
+            GetMACAdapter(&iface);
+            PrintMACAdapter(&iface);
+        break;
 
-  printf("Aplicamos filtro puerto 80 \n\n\n");
-  FilterTcpdump(&iface, "port 80");
+        case 4:
+            FilterTcpdump(&iface, "port 80");
+        break;
 
-  printf("Capturamos X paquetes por el puerto 80\n\n\n"); 
-  Receive_x_Frames(&iface, 2);
+        case 5:
+            printf("\n");
+            printf("Please, enter the number of packets for capture (0 for endless): ");
+            scanf("%d", &nPackets);
+            printf("\n\n Capturing... \n\n");
+            Receive_x_Frames(&iface, nPackets);
+        break;
 
-  //obtenemos información del enlace
-  GetStadistics(&iface);
+        case 6:
+            printf("\n");
+            printf("Please, enter the number of packets for capture: (0 for endless)");
+            scanf("%d", &nPackets);
+            printf("\n\n Capturing... \n\n");
+            Thread_capture(&iface, nPackets);
+        break;
 
-  //Procesamos 5 paquetes para un archivo .pcap
-  Dump2File(&iface, 5, "capturados.pcap");
+        case 7:
+            ReadPacketsBuffer(&iface);
+        break;
 
-  //Capturamos 5 paquetes en el buffer desde otro hilo
-  Thread_capture(&iface, 5);
+        case 8:
+            GetStadistics(&iface);
+        break;
 
-  printf("\nPruebas de inyecciones: \n\n\n");
+        case 9:
+            printf("\n");
+            printf("Please, enter the number of packets for capture: ");
+            scanf("%d", &nPackets);
+            Dump2File(&iface,nPackets,"dumpFile.pcap");
+        break;
+        
+        case 10:
+            OpenDumpFile("dumpFile.pcap");
+        break;
 
-  unsigned char *cabeceraIP;
-  unsigned char *cabeceraTCP;
-  unsigned char *paquete;
+        case 0:        
+        break;
+
+        default:
+        printf("Opción incorrecta.");
+        break;
+    }
+
+    }
+    printf("\nBye!\n\n");
+  
+
+  printf("\nInjections tests... \n\n\n");
+
+  unsigned char *IPh;
+  unsigned char *TCPh;
+  unsigned char *packet;
 
   //Definimos una MAC origen
   unsigned char mac1[6];
@@ -95,39 +139,33 @@ int main(int argc, char const *argv[])
   mac2[4] = 0x14;
   mac2[5] = 0x15;
 
-  cabeceraIP = IPheader(5, 1, "192.168.3.24", "8.8.8.253", "A");
-  paquete = Build_packet_IP(mac1, mac2, cabeceraIP);
-  SendFrame(&iface, paquete, 5);
+  IPh = IPheader(5, 1, "192.168.3.24", "8.8.8.253", "A");
+  packet = Build_packet_IP(mac1, mac2, IPh);
+  SendFrame(&iface, packet, 5);
 
-  cabeceraIP = IPheader(5, 1, "192.168.3.24", "8.8.8.253", "");
-  paquete = Build_packet_IP(mac1, mac2, cabeceraIP);
-  SendFrame(&iface, paquete, 5);
+  IPh = IPheader(5, 1, "192.168.3.24", "8.8.8.253", "");
+  packet = Build_packet_IP(mac1, mac2, IPh);
+  SendFrame(&iface, packet, 5);
 
-  cabeceraTCP = TCPheader(34, 300, 5, "ABCDE");
-  cabeceraIP = IPheader(5, 6, "192.168.3.24", "8.8.8.253","");
-  paquete = Build_packet_IP_TCP(mac1, mac2, cabeceraIP, cabeceraTCP);
-  SendFrame(&iface, paquete, 4);
+  TCPh = TCPheader(34, 300, 5, "ABCDE");
+  IPh = IPheader(5, 6, "192.168.3.24", "8.8.8.253","");
+  packet = Build_packet_IP_TCP(mac1, mac2, IPh, TCPh);
+  SendFrame(&iface, packet, 4);
 
-  cabeceraIP = IPheader(5, 1, "192.168.3.24", "8.8.8.253", "");
-  paquete = Build_packet_IP(mac1, mac2, cabeceraIP);
-  SendFrame(&iface, paquete, 5);
+  IPh = IPheader(5, 1, "192.168.3.24", "8.8.8.253", "");
+  packet = Build_packet_IP(mac1, mac2, IPh);
+  SendFrame(&iface, packet, 5);
 
-  cabeceraTCP = TCPheader(34, 300, 5, "dsfdsfdsAAAAAAAA"); 
-  cabeceraIP = IPheader(5, 6, "192.148.3.24", "8.8.8.200","");
-  paquete = Build_packet_IP_TCP(mac1, mac2, cabeceraIP, cabeceraTCP);
-  SendFrame(&iface, paquete, 2);
+  TCPh = TCPheader(34, 300, 5, "EFGHI"); 
+  IPh = IPheader(5, 6, "192.148.3.24", "8.8.8.200","");
+  packet = Build_packet_IP_TCP(mac1, mac2, IPh, TCPh);
+  SendFrame(&iface, packet, 2);
 
-  free(cabeceraTCP);
-  free(cabeceraIP);
-  free(paquete);
+  free(TCPh);
+  free(IPh);
+  free(packet);
 
-  printf("Leemos el buffer \n\n\n"); 
-  ReadPacketsBuffer(&iface);
-
-  printf("Leemos el archivo capturados.pcap \n"); 
-  OpenDumpFile("capturados.pcap");
-
-  printf("Cerramos el handle \n\n\n"); 
+  printf("\nDone! \n\n\n");
 
   CloseAdapter(&iface);
 

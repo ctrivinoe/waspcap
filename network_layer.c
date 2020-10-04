@@ -19,7 +19,7 @@ unsigned char * IPheader(int IHL, int protocol, char *source_IP, char *destinati
 
     packet[1] = 0x00; // DSField ECN
 
-    packet[2] = 0x00; // total length ....... calcular? Calculadora: Bytes total en wireshark - 13
+    packet[2] = 0x00; // total length 
 
     packet[3] = x; 
     
