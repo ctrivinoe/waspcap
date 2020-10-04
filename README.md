@@ -24,7 +24,7 @@ In addition, when talking with other programmer friends, they often tell me that
 
 These were the main reasons that have led me to try to expand the project, initially as something personal (whether or not it has an impact), but with the hope that it may be useful or interesting to many people!
 
-## Requirementss 📋
+## Requirements 📋
 
 ⚠️ The program works correctly on [Ubuntu 18.04](https://releases.ubuntu.com/18.04/). Some distributions maybe are likely to have problems running it. It's a pending issue to improve.
 
