@@ -61,6 +61,8 @@ Aside from the posted and future issues, I plan to create a website for the proj
 * [libpcap](https://www.tcpdump.org/) 
 * [Ubuntu 18.04](https://releases.ubuntu.com/18.04/)
 
+* [Build our own TCP/IP packages from 0](https://dev.to/ctrivinoe/build-ur-tcp-ip-packet-1-4k60) - Dev.to
+
 
 ## Author & Contributors ✒️
 
