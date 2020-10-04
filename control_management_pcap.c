@@ -369,12 +369,13 @@ int setDeviceName(interface_t *iface, char *name){
 }
 
 
-int FilterTcpdump(interface_t *iface, char const *filter_tcpdump){
+int FilterTcpdump(interface_t *iface, char *filter_tcpdump){
 
     char error_buffer[PCAP_ERRBUF_SIZE];
     struct bpf_program filter;
     bpf_u_int32 subnet_mask, ip;
     int snapshot_length = 1024;
+    
     
 
     if(control_handle!=1)
@@ -383,6 +384,7 @@ int FilterTcpdump(interface_t *iface, char const *filter_tcpdump){
             printf("Filter Error: Closed handle");
         return 1;
     }
+
 
     //load data
     if (pcap_lookupnet(iface->deviceName, &ip, &subnet_mask, error_buffer) == -1)
