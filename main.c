@@ -49,14 +49,12 @@ int main(int argc, char const *argv[])
     switch(x)
         {
         case 1:
-        interfaces = GetAvailAdapters();
+            interfaces = GetAvailAdapters();
             PrintInterfaces(&interfaces);
         break;
 
         case 2:
-            
             interfaces = GetAvailAdapters();
-            //CloseAdapter(&iface);
             SelectAdapter(&interfaces, &iface);
             OpenAdapter(&iface);
         break;
@@ -91,16 +89,17 @@ int main(int argc, char const *argv[])
         break;
 
         case 8:
+            GetStadistics(&iface);
+        break;
+
+        case 9:
             printf("\n");
             printf("Please, enter the number of packets for capture: ");
             scanf("%d", &nPackets);
-            printf("\n\n Capturing... \n\n");
-            Dump2File(&iface, nPackets,"dumpFile.pcap");
-            printf("\n\n Ready! \n\n");
+            Dump2File(&iface,nPackets,"dumpFile.pcap");
         break;
-
-
-        case 9:
+        
+        case 10:
             OpenDumpFile("dumpFile.pcap");
         break;
 
@@ -115,9 +114,6 @@ int main(int argc, char const *argv[])
     }
     printf("\nBye!\n\n");
   
-
-
-
 
   printf("\nInjections tests... \n\n\n");
 
