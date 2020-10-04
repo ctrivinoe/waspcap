@@ -127,7 +127,7 @@ int SelectAdapter(pcap_if_t *sDevice, interface_t *iface){
     pcap_if_t *temp; // aux for loop
     int lookup_return_code;
     bpf_u_int32 ip_raw; // IP address as integer
-    char *ip; 
+    char *ip = malloc(sizeof(char)*16); 
     bpf_u_int32 subnet_mask_raw; // Subnet mask as integer
     char subnet_mask[13]; 
     struct in_addr address; // Used for both ip & subnet
@@ -203,6 +203,7 @@ int SelectAdapter(pcap_if_t *sDevice, interface_t *iface){
                 printf("IP address: %s\n", ip);
                 printf("Subnet mask: %s\n", subnet_mask); 
                 vector[i] = 1;
+                free(ip);
         }
         i++;
         bool = 0;
