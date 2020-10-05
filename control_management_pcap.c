@@ -168,21 +168,10 @@ int SelectAdapter(pcap_if_t *sDevice, interface_t *iface){
             error_buffer
         );
 
-        p = temp->name;
-        
-        //interface filter: enp*, eth*, wl*, lo*
-        if 
-        (*p == 'e'){p++;if(*p == 'n'){p++;if(*p == 'p'){bool=1;}}} 
-        else if 
-        (*p == 'e'){p++;if(*p == 't'){p++;if(*p == 'h'){bool=1;}}}
-        else if 
-        (*p == 'w'){p++;if(*p == 'l'){bool=1;}}
-        else if 
-        (*p == 'l'){p++;if(*p == 'o'){bool=1;}}
-        else {bool = 0;}
 
-        //if the interface is one of the filtered and has useful values
-        if (lookup_return_code != -1 && bool == 1){
+
+        //if the interface has useful values
+        if (lookup_return_code != -1){
 
                 printf("\n\n[ %d ]:   %s \n",i,temp->name);
 
@@ -319,20 +308,8 @@ int PrintInterfaces(pcap_if_t *interfaces){
             error_buffer
         );
 
-        p = temp->name;
-        
-        //interface filter
-        if 
-        (*p == 'e'){p++;if(*p == 'n'){p++;if(*p == 'p'){bool=1;}}} 
-        else if 
-        (*p == 'e'){p++;if(*p == 't'){p++;if(*p == 'h'){bool=1;}}}
-        else if 
-        (*p == 'w'){p++;if(*p == 'l'){bool=1;}}
-        else if 
-        (*p == 'l'){p++;if(*p == 'o'){bool=1;}}
-        else {bool = 0;}
           
-        //if the interface is one of the filtered and has useful values
+        //if the interface has useful values
         if (lookup_return_code != -1 && bool == 1)
         {
                 printf("\n\n[ %d ]:   %s \n",i,temp->name);
